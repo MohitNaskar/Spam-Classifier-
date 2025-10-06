@@ -1,23 +1,21 @@
 import streamlit as st
-import pickle 
+import pickle
 import nltk
+import os
 import string
-nltk.download('punkt')
-nltk.download('stopwords')
-import nltk
-
-# Ensure required resources are available
-try:
-    nltk.data.find('tokenizers/punkt')
-except LookupError:
-    nltk.download('punkt')
-
-try:
-    nltk.data.find('corpora/stopwords')
-except LookupError:
-    nltk.download('stopwords')
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
+
+# Ensure nltk data is available in Streamlit Cloud
+nltk_data_dir = os.path.join(os.getcwd(), "nltk_data")
+if not os.path.exists(nltk_data_dir):
+    os.mkdir(nltk_data_dir)
+nltk.data.path.append(nltk_data_dir)
+for resource in ['punkt', 'stopwords']:
+    try:
+        nltk.data.find(f'tokenizers/{resource}') if resource == 'punkt' else nltk.data.find(f'corpora/{resource}')
+    except LookupError:
+        nltk.download(resource, download_dir=nltk_data_dir)
 
 ps = PorterStemmer()
 
